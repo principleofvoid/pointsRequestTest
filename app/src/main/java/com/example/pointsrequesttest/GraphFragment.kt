@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.navArgs
 import com.example.pointsrequesttest.databinding.FragmentGraphBinding
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
@@ -17,6 +18,8 @@ import javax.inject.Inject
 class GraphFragment : Fragment() {
     private var _binding: FragmentGraphBinding? = null
     private val binding get() = _binding!!
+
+    private val args: GraphFragmentArgs by navArgs()
 
     @Inject
     lateinit var presenter: GraphPresenter
@@ -37,7 +40,7 @@ class GraphFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         presenter.attachView(this)
-        presenter.requestPoints(5)
+        presenter.requestPoints(args.pointsCount)
     }
 
     override fun onDestroyView() {
@@ -46,11 +49,39 @@ class GraphFragment : Fragment() {
         _binding = null
     }
 
+    fun showProgress() {
+        with(binding) {
+            textErrorMessage.visibility = View.GONE
+            graph.visibility = View.GONE
+
+            progressBar.visibility = View.VISIBLE
+        }
+    }
+
     fun showPoints(points: List<Point>) {
-        val values = points.map { Entry(it.x, it.y) }.sortedBy { it.x }
-        val set = LineDataSet(values, "Sample data set")
-        set.color = Color.BLACK
-        binding.graph.data = LineData(listOf(set))
-        binding.graph.invalidate()
+        with(binding) {
+            progressBar.visibility = View.GONE
+            textErrorMessage.visibility = View.GONE
+
+            with(graph) {
+                val values = points.map { Entry(it.x, it.y) }.sortedBy { it.x }
+                val set = LineDataSet(values, "Sample data set")
+                set.color = Color.BLACK
+                data = LineData(listOf(set))
+                visibility = View.VISIBLE
+            }
+        }
+    }
+
+    fun showError(errorMessage: String) {
+        with(binding) {
+            progressBar.visibility = View.GONE
+            graph.visibility = View.GONE
+
+            with(textErrorMessage) {
+                text = errorMessage
+                visibility = View.VISIBLE
+            }
+        }
     }
 }

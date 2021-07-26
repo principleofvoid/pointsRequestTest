@@ -1,5 +1,6 @@
 package com.example.pointsrequesttest
 
+import android.util.Log
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.schedulers.Schedulers
 import javax.inject.Inject
@@ -16,16 +17,20 @@ class GraphPresenter @Inject constructor(
     }
 
     fun requestPoints(count: Int) {
+        view?.showProgress()
         apiService.getPoints(count)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(
                 //onSuccess
                 {
+                    Log.d("[DEBUG]", "onSuccess")
                     view?.showPoints(it.points)
                 },
                 //onError
                 {
+                    Log.d("[DEBUG]", "onError")
+                    view?.showError(it.localizedMessage ?: "Unknown error")
                 })
     }
 

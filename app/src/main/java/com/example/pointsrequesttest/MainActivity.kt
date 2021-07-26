@@ -1,10 +1,8 @@
 package com.example.pointsrequesttest
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
 import com.example.pointsrequesttest.databinding.ActivityMainBinding
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
-import io.reactivex.rxjava3.functions.Consumer
 import javax.inject.Inject
 
 class MainActivity : AppCompatActivity() {
