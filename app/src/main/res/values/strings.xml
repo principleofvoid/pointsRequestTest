@@ -1,5 +1,11 @@
 <resources>
     <string name="app_name">PointsRequestTest</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="error_empty_points_count">Число точек должно быть заполнено</string>
+    <string name="error_points_count_zero">Число точек должно быть больше нуля</string>
+    <string name="start_message">При нажатии на кнопку Поехали будет загружен список точек и отображен график по ним.</string>
+    <string name="start_points_count_hint">Введите число точек</string>
+    <string name="start_button_run">Поехали</string>
+    <string name="table_index">%1$d)</string>
+    <string name="table_x">X: %1$2f</string>
+    <string name="table_y">Y: %1$2f</string>
 </resources>

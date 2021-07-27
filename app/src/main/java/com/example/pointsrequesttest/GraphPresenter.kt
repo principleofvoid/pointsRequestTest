@@ -3,18 +3,14 @@ package com.example.pointsrequesttest
 import android.util.Log
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.schedulers.Schedulers
+import retrofit2.HttpException
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
 class GraphPresenter @Inject constructor(
     private val apiService: TestApiService
-) {
-    private var view: GraphFragment? = null
-
-    fun attachView(view: GraphFragment) {
-        this.view = view
-    }
+) : BasePresenter<GraphFragment>() {
 
     fun requestPoints(count: Int) {
         view?.showProgress()
@@ -23,18 +19,17 @@ class GraphPresenter @Inject constructor(
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(
                 //onSuccess
-                {
-                    Log.d("[DEBUG]", "onSuccess")
-                    view?.showPoints(it.points)
+                { pointsResponse ->
+                    view?.showPoints(pointsResponse.points.sortedBy { point -> point.x })
                 },
                 //onError
-                {
-                    Log.d("[DEBUG]", "onError")
-                    view?.showError(it.localizedMessage ?: "Unknown error")
+                { error ->
+                    val errorMessage = if (error is HttpException) {
+                        error.response()?.errorBody()?.string() ?: "Unknown http error"
+                    } else {
+                        error.localizedMessage ?: "Unknown error"
+                    }
+                    view?.showError(errorMessage)
                 })
-    }
-
-    fun detachView() {
-        view = null
     }
 }
